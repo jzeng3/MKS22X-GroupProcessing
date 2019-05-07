@@ -8,6 +8,10 @@ interface Moveable {
   void move();
 }
 
+interface Collideable {
+  boolean isTouching(Thing other);
+}
+
 abstract class Thing implements Displayable {
   float x, y;//Position of the Thing
 
@@ -37,7 +41,7 @@ class Rock extends Thing {
 }
 
 
-public class LivingRock extends Rock implements Moveable {
+public class LivingRock extends Rock implements Moveable, Collideable {
   LivingRock(float x, float y) {
     super(x, y);
   }
@@ -48,6 +52,16 @@ public class LivingRock extends Rock implements Moveable {
   void display() {
     super.display();
   } 
+  
+  // preliminary code (will add code for overlap based on size of the rock)
+  boolean isTouching(Thing other){
+    // if rock and ball coordinates overlap, return true; else, return false
+    if (x == other.x && y == other.y){
+      return true;
+    }
+    return false;
+  }
+  
 }
 
 class Ball extends Thing implements Moveable {
