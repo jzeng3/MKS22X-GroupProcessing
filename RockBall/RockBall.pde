@@ -23,6 +23,8 @@ class Rock extends Thing {
 
   void display() {
     /* ONE PERSON WRITE THIS */
+    //triangle(x, y + );
+    circle(x, y, 50);
   }
 }
 
