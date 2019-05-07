@@ -51,17 +51,20 @@ public class LivingRock extends Rock implements Moveable {
 }
 
 class Ball extends Thing implements Moveable {
+  Random rand = new Random();
+  Random rand1 = new Random();
+  int type;
+  int path; 
+  PImage img = loadImage("SoccerBall.png");
   Ball(float x, float y) {
-
     super(x, y);
+    type = Math.abs(rand.nextInt() % 3);
+    path = Math.abs(rand1.nextInt() % 3);
     
   }
-
-  Random rand = new Random();
-  int type = Math.abs(rand.nextInt() % 3);
   
   void display() {
-    System.out.println(type);
+   // System.out.println(type);
     // type 0: make a simple circle
     if (type == 0){
       fill(100);
@@ -86,7 +89,7 @@ class Ball extends Thing implements Moveable {
       rect(x, y + 20, 12, 5,8); 
       
       //eyes
-      fill(255);
+      // fill(255);
       ellipseMode(CENTER);
       ellipse(x - 5,y,7,10);
       ellipse(x + 5,y,7,10);
@@ -98,17 +101,26 @@ class Ball extends Thing implements Moveable {
     }
     // type 2: soccer ball image
     if (type == 2){
-    PImage img = loadImage("SoccerBall.png");
     image(img,  x, y,50,50);
     
     }
   }
-  // ball moves in the specified direction and speed 
-  int x_direction = Math.abs( rand.nextInt()) % 2;
-  int y_direction = Math.abs( rand.nextInt()) % 2;
-  int x_speed = Math.abs( rand.nextInt() % 10) + 1;
-  int y_speed = ( Math.abs( rand.nextInt() % 10) + 1);
+  
+  int x_direction = Math.abs( rand1.nextInt()) % 2;
+  int y_direction = Math.abs( rand1.nextInt()) % 2;
+  int x_speed = Math.abs( rand1.nextInt() % 10) + 1;
+  int y_speed =  Math.abs( rand1.nextInt() % 10) + 1;
   void move() {
+    System.out.println( path );
+    // path 0: random movement
+    if (path == 0){
+      System.out.println("zero");
+        x += rand1.nextInt() % 10;
+        y += rand1.nextInt() % 20;
+    }
+    
+    // path 1: set direction and speed
+    else if (path == 1){
     if (x_direction == 0){
       x += x_speed;
     }
@@ -121,6 +133,16 @@ class Ball extends Thing implements Moveable {
     else if (y_direction == 1){
       y -= y_speed;
     }
+    }
+    // path 2: move along ellipses
+    float t = millis()/1000.0;
+    float r1Factor = Math.abs( rand1.nextInt() % 20) + 1;
+    float r2Factor = Math.abs( rand1.nextInt() % 20) + 1;
+    if (path == 2){
+      x = (int)(x + (height / r1Factor)*cos(t));
+      y = (int)(y + (height / r2Factor)*sin(t));
+    }
+    
   }
 }
 
