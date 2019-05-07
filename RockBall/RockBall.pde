@@ -23,27 +23,36 @@ abstract class Thing implements Displayable {
 }
 
 class Rock extends Thing {
+  Random rand = new Random(); 
+  int type; // type of rock 
+  PImage rock = loadImage("Rock.png"); // rock image
+  
+  
   Rock(float x, float y) {
     super(x, y);
+    type = Math.abs(rand.nextInt()) % 3; // 0, 1, or 2
   }
 
    void display() {
     /* ONE PERSON WRITE THIS */
     
-   /* if (type == 0) {
+    if (type == 0) {
       //Simple shape
       circle(x, y, 50);
     }
     if (type == 1) {
       //Complex Shape
-    }*/
+    }
   }
 }
 
 
 public class LivingRock extends Rock implements Moveable, Collideable {
+  Random rand1 = new Random();
+  int path; // type of path 
   LivingRock(float x, float y) {
     super(x, y);
+    path = Math.abs(rand1.nextInt()) % 3; // 0, 1, or 2
   }
   void move() {
     /* ONE PERSON WRITE THIS */
@@ -124,13 +133,13 @@ class Ball extends Thing implements Moveable {
   int y_direction = Math.abs( rand1.nextInt()) % 2;
   int x_speed = Math.abs( rand1.nextInt() % 10) + 1;
   int y_speed =  Math.abs( rand1.nextInt() % 10) + 1;
+  
   void move() {
-    System.out.println( path );
+    // System.out.println( path );
     // path 0: random movement
     if (path == 0){
-      System.out.println("zero");
-        x += rand1.nextInt() % 10;
-        y += rand1.nextInt() % 20;
+        x += Math.abs( rand1.nextInt() % 10) + 5;
+        y += Math.abs( rand1.nextInt() % 20) + 10;
     }  
     // path 1: set direction and speed
     else if (path == 1){
@@ -149,9 +158,10 @@ class Ball extends Thing implements Moveable {
     }
     // path 2: move along ellipses
     float t = millis()/1000.0;
-    float r1Factor = Math.abs( rand1.nextInt() % 20) + 1;
-    float r2Factor = Math.abs( rand1.nextInt() % 20) + 1;
+    float r1Factor = Math.abs( rand1.nextInt() % 5) + 1;
+    float r2Factor = Math.abs( rand1.nextInt() % 5) + 1;
     if (path == 2){
+      System.out.println("path = 2");
       x = (int)(x + (height / r1Factor)*cos(t));
       y = (int)(y + (height / r2Factor)*sin(t));
     }

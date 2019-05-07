@@ -2,6 +2,11 @@
 
 ## Contributions
 
-### 2019-05-
-Rock (display) and LivingRock (move) - Timothy Stansberry
-Ball (display and move) - Jamie Zeng
+### 2019-05-07
+
+Rock (display) and LivingRock (move) - Timothy Stansberry <br />
+
+Ball (display and move) - Jamie Zeng <br />
+
+### References
+https://processing.org/reference/
