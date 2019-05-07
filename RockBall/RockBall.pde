@@ -103,10 +103,24 @@ class Ball extends Thing implements Moveable {
     
     }
   }
-
+  // ball moves in the specified direction and speed 
+  int x_direction = Math.abs( rand.nextInt()) % 2;
+  int y_direction = Math.abs( rand.nextInt()) % 2;
+  int x_speed = Math.abs( rand.nextInt() % 10) + 1;
+  int y_speed = ( Math.abs( rand.nextInt() % 10) + 1);
   void move() {
-    x += rand.nextInt() % 10;
-    y += rand.nextInt() % 20;
+    if (x_direction == 0){
+      x += x_speed;
+    }
+    else if (x_direction == 1){
+      x -= x_speed;
+    }
+    if (y_direction == 0){
+      y += y_speed;
+    }
+    else if (y_direction == 1){
+      y -= y_speed;
+    }
   }
 }
 
