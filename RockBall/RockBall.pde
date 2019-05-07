@@ -1,5 +1,5 @@
 interface Displayable {
-  void display();
+  void display(int type);
 }
 
 interface Moveable {
@@ -13,7 +13,7 @@ abstract class Thing implements Displayable {
     this.x = x;
     this.y = y;
   }
-  abstract void display();
+  abstract void display(int type);
 }
 
 class Rock extends Thing {
@@ -21,10 +21,16 @@ class Rock extends Thing {
     super(x, y);
   }
 
-  void display() {
+  void display(int type) {
     /* ONE PERSON WRITE THIS */
-    //triangle(x, y + );
-    circle(x, y, 50);
+    
+    if (type == 0) {
+      //Simple shape
+      circle(x, y, 50);
+    }
+    if (type == 1) {
+      //Complex Shape
+    }
   }
 }
 
@@ -35,6 +41,10 @@ public class LivingRock extends Rock implements Moveable {
   void move() {
     /* ONE PERSON WRITE THIS */
   }
+  /*
+  void display(int type) {
+    super.display(type);
+  } */
 }
 
 class Ball extends Thing implements Moveable {
@@ -43,7 +53,7 @@ class Ball extends Thing implements Moveable {
     super(x, y);
   }
 
-  void display() {
+  void display(int type) {
     /* ONE PERSON WRITE THIS */
   }
 
@@ -79,7 +89,7 @@ void draw() {
   background(255);
 
   for (Displayable thing : thingsToDisplay) {
-    thing.display();
+    thing.display(1);
   }
   for (Moveable thing : thingsToMove) {
     thing.move();
