@@ -1,3 +1,5 @@
+import java.util.*;
+
 interface Displayable {
   void display();
 }
@@ -55,9 +57,11 @@ class Ball extends Thing implements Moveable {
     
   }
 
+  Random rand = new Random();
   void display() {
-    int type = 2;
-    //int type = (int)Math.random() * 3;
+
+    int type = Math.abs(rand.nextInt() % 3);
+    System.out.println(type);
     // type 0: make a simple circle
     if (type == 0){
       fill(100);
