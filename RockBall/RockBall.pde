@@ -54,7 +54,43 @@ class Ball extends Thing implements Moveable {
   }
 
   void display(int type) {
-    /* ONE PERSON WRITE THIS */
+    // type 0: make a simple circle
+    if (type == 0){
+      fill(100);
+      ellipseMode(CENTER);
+      ellipse(50, 50, 25,25); 
+      
+    }
+    // type 1: make a football
+    if (type == 1){
+       fill(100);
+      ellipseMode(CENTER);
+      // ball silhouette
+      ellipse(50, 50, 25, 60); 
+      
+      fill(200);
+      rectMode(CENTER);
+      // vertical stripe
+      rect(50, 50, 5, 30); 
+      // horizontal lines
+      rect(50, 25, 12, 5,8); 
+      rect(50, 75, 12, 5,8); 
+      //eyes
+      fill(255);
+      ellipseMode(CENTER);
+      ellipse(45,50,7,10);
+      ellipse(55,50,7,10);
+      fill(0);
+      ellipseMode(CENTER);
+      ellipse(45,50,3,3);
+      ellipse(55,50,3,3);
+      
+    }
+    if (type == 2){
+    PImage img = loadImage("SoccerBall.png");
+    image(img, 0,0);
+    img.resize(50, 0);
+    }
   }
 
   void move() {
