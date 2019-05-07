@@ -1,5 +1,5 @@
 interface Displayable {
-  void display(int type);
+  void display();
 }
 
 interface Moveable {
@@ -13,7 +13,7 @@ abstract class Thing implements Displayable {
     this.x = x;
     this.y = y;
   }
-  abstract void display(int type);
+  abstract void display();
 }
 
 class Rock extends Thing {
@@ -21,18 +21,19 @@ class Rock extends Thing {
     super(x, y);
   }
 
-  void display(int type) {
+   void display() {
     /* ONE PERSON WRITE THIS */
     
-    if (type == 0) {
+   /* if (type == 0) {
       //Simple shape
       circle(x, y, 50);
     }
     if (type == 1) {
       //Complex Shape
-    }
+    }*/
   }
 }
+
 
 public class LivingRock extends Rock implements Moveable {
   LivingRock(float x, float y) {
@@ -41,24 +42,27 @@ public class LivingRock extends Rock implements Moveable {
   void move() {
     /* ONE PERSON WRITE THIS */
   }
-  /*
-  void display(int type) {
-    super.display(type);
-  } */
+  
+  void display() {
+    super.display();
+  } 
 }
 
 class Ball extends Thing implements Moveable {
   Ball(float x, float y) {
 
     super(x, y);
+    
   }
 
-  void display(int type) {
+  void display() {
+    int type = 1;
+    //int type = (int)Math.random() * 3;
     // type 0: make a simple circle
     if (type == 0){
       fill(100);
       ellipseMode(CENTER);
-      ellipse(50, 50, 25,25); 
+      ellipse(x, y, 25,25); 
       
     }
     // type 1: make a football
@@ -66,24 +70,24 @@ class Ball extends Thing implements Moveable {
        fill(100);
       ellipseMode(CENTER);
       // ball silhouette
-      ellipse(50, 50, 25, 60); 
+      ellipse(x, y, 25, 50); 
       
       fill(200);
       rectMode(CENTER);
       // vertical stripe
-      rect(50, 50, 5, 30); 
+      rect(x, y, 5, 20); 
       // horizontal lines
-      rect(50, 25, 12, 5,8); 
-      rect(50, 75, 12, 5,8); 
+      rect(x, y - 20, 12, 5,8); 
+      rect(x, y + 20, 12, 5,8); 
       //eyes
       fill(255);
       ellipseMode(CENTER);
-      ellipse(45,50,7,10);
-      ellipse(55,50,7,10);
+      ellipse(x - 5,y,7,10);
+      ellipse(x + 5,y,7,10);
       fill(0);
       ellipseMode(CENTER);
-      ellipse(45,50,3,3);
-      ellipse(55,50,3,3);
+      ellipse(x - 5,y,3,3);
+      ellipse(x + 5,y,3,3);
       
     }
     if (type == 2){
@@ -125,7 +129,7 @@ void draw() {
   background(255);
 
   for (Displayable thing : thingsToDisplay) {
-    thing.display(1);
+    thing.display();
   }
   for (Moveable thing : thingsToMove) {
     thing.move();
