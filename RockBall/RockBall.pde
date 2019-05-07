@@ -56,7 +56,7 @@ class Ball extends Thing implements Moveable {
   }
 
   void display() {
-    int type = 1;
+    int type = 2;
     //int type = (int)Math.random() * 3;
     // type 0: make a simple circle
     if (type == 0){
@@ -76,9 +76,11 @@ class Ball extends Thing implements Moveable {
       rectMode(CENTER);
       // vertical stripe
       rect(x, y, 5, 20); 
+      
       // horizontal lines
       rect(x, y - 20, 12, 5,8); 
       rect(x, y + 20, 12, 5,8); 
+      
       //eyes
       fill(255);
       ellipseMode(CENTER);
@@ -90,10 +92,11 @@ class Ball extends Thing implements Moveable {
       ellipse(x + 5,y,3,3);
       
     }
+    // type 2: soccer ball image
     if (type == 2){
     PImage img = loadImage("SoccerBall.png");
-    image(img, 0,0);
-    img.resize(50, 0);
+    image(img,  x, y,50,50);
+    
     }
   }
 
