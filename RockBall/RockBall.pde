@@ -58,15 +58,15 @@ class Ball extends Thing implements Moveable {
   }
 
   Random rand = new Random();
+  int type = Math.abs(rand.nextInt() % 3);
+  
   void display() {
-
-    int type = Math.abs(rand.nextInt() % 3);
     System.out.println(type);
     // type 0: make a simple circle
     if (type == 0){
       fill(100);
       ellipseMode(CENTER);
-      ellipse(x, y, 25,25); 
+      ellipse(x, y, 50,50); 
       
     }
     // type 1: make a football
@@ -105,7 +105,8 @@ class Ball extends Thing implements Moveable {
   }
 
   void move() {
-    /* ONE PERSON WRITE THIS */
+    x += rand.nextInt() % 10;
+    y += rand.nextInt() % 20;
   }
 }
 
