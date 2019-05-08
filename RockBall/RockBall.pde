@@ -28,19 +28,21 @@ class Rock extends Thing {
   float[] Xnum;
   float[] Ynum;
   PImage rock = loadImage("Rock.png"); // rock image
+  PImage rock2 = loadImage("Rock2.png");
   
   
   Rock(float x, float y) {
     super(x, y);
-    type = Math.abs(rand.nextInt()) % 3; // 0, 1, or 2
+    type = Math.abs(rand.nextInt()) % 2; // 0 or 1
+    /*
     Xnum = new float[] {x-25, random(x-1, x-25), x, random(x+1, x+25), x+25, random(x+1, x+25), x, random(x-1, x-25)};
     Ynum = new float[] {y, random(y-10, y-25), y-25, random(y-10, y-25), y, random(y+10, y+25), y+25, random(y+10, y+25)};
-    
+    */
   }
 
    void display() {
     /* ONE PERSON WRITE THIS */
-    
+    /*
     if (type == 0) {rect(x,y,50,50);}
     if (type == 1) {
       beginShape();
@@ -49,8 +51,12 @@ class Rock extends Thing {
       }
       endShape(CLOSE);
     }
-    if (type == 2) {
-      image(rock,  x, y, 80,50);
+    */
+    if (type == 0) {
+      image(rock, x, y, 80,50);
+    }
+    if (type == 1) {
+      image(rock2, x, y, 50, 50);
     }
   }
 }
@@ -69,6 +75,18 @@ public class LivingRock extends Rock implements Moveable, Collideable {
   
   void display() {
     super.display();
+    fill(255, 255, 255);
+    if (type == 0) {
+      ellipse(x + 50, y + 15, 10, 5);
+      ellipse(x + 30, y + 15, 10, 5);
+    }
+    if (type == 1) {
+      ellipse(x + 35, y + 15, 10, 5);
+      ellipse(x + 15, y + 15, 10, 5);
+    }
+    
+    
+ 
   } 
   
   // preliminary code (will add code for overlap based on size of the rock)
