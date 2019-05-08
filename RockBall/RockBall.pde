@@ -25,23 +25,32 @@ abstract class Thing implements Displayable {
 class Rock extends Thing {
   Random rand = new Random(); 
   int type; // type of rock 
+  float[] Xnum;
+  float[] Ynum;
   PImage rock = loadImage("Rock.png"); // rock image
   
   
   Rock(float x, float y) {
     super(x, y);
     type = Math.abs(rand.nextInt()) % 3; // 0, 1, or 2
+    Xnum = new float[] {x-25, random(x-1, x-25), x, random(x+1, x+25), x+25, random(x+1, x+25), x, random(x-1, x-25)};
+    Ynum = new float[] {y, random(y-10, y-25), y-25, random(y-10, y-25), y, random(y+10, y+25), y+25, random(y+10, y+25)};
+    
   }
 
    void display() {
     /* ONE PERSON WRITE THIS */
     
-    if (type == 0) {
-      //Simple shape
-      circle(x, y, 50);
-    }
+    if (type == 0) {rect(x,y,50,50);}
     if (type == 1) {
-      //Complex Shape
+      beginShape();
+      for (int i = 0; i < 5; i++) {
+        vertex(Xnum[i],Ynum[i]);
+      }
+      endShape(CLOSE);
+    }
+    if (type == 2) {
+      image(rock,  x, y, 80,50);
     }
   }
 }
