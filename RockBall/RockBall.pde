@@ -112,7 +112,8 @@ class Ball extends Thing implements Moveable {
   Ball(float x, float y) {
     super(x, y);
     type = Math.abs(rand.nextInt() % 3);
-    path = Math.abs(rand1.nextInt() % 3);
+    //path = Math.abs(rand1.nextInt() % 3);
+    path = 1;
     color1 = Math.abs(rand.nextInt() % 256);
     color2 = Math.abs(rand.nextInt() % 256);
     color3 = Math.abs(rand.nextInt() % 256);
@@ -169,6 +170,11 @@ class Ball extends Thing implements Moveable {
   void move() {
     // System.out.println( path );
     // path 0: random movement
+    // transport ball to center of the screen if it passes the boundaries
+    if ( (int)x <= 0 || (int)x >= width || (int)y <= 0 || (int)y >= height){
+      bounce();
+    }
+    
     if (path == 0){
         x += Math.abs( rand1.nextInt() % 2) + 5;
         y += Math.abs( rand1.nextInt() % 2) + 10;
@@ -197,32 +203,20 @@ class Ball extends Thing implements Moveable {
       x = (int)(x + (height / r1Factor)*cos(t));
       y = (int)(y + (height / r2Factor)*sin(t));
     }
-    
-    // transport ball to center of the screen if it passes the boundaries
-    if ( (int)x <= 0 || (int)x >= width || (int)y <= 0 || (int)y >= height){
-      bounce();
-    }
+   
     
   }
   
   void bounce(){
+    int bound = 100; 
+    int x_bound1 = bound;
+    int x_bound2 = width - bound;
+    int y_bound1 = bound;
+    int y_bound2 = height - bound;
+    
     if (path == 1){
-      if ( (int)x <= 0 && (int)y <= 0 ){
         x_speed *= -1;
         y_speed *= -1;
-      }
-      else if ( (int)x >= width && (int)y <= 0){
-        x_speed *= -1;
-        y_speed *= -1;
-      }
-      else if ( (int)x <= 0 && (int)y >= height){
-        x_speed *= -1;
-        y_speed *= -1; 
-      }
-      else if ( (int)x >= width  && (int)y >= height){
-        x_speed *= -1;
-        y_speed *= -1;
-      }
     }
   }
   
