@@ -63,14 +63,31 @@ class Rock extends Thing {
 
 
 public class LivingRock extends Rock implements Moveable, Collideable {
+  int xinc;
+  int yinc;
   Random rand1 = new Random();
   int path; // type of path 
+  
   LivingRock(float x, float y) {
     super(x, y);
     path = Math.abs(rand1.nextInt()) % 3; // 0, 1, or 2
+    xinc = (int) random(-1, 2);
+    yinc = (int) random(-1, 2);
   }
   void move() {
     /* ONE PERSON WRITE THIS */
+    if (x < 0) xinc = 1;
+    if (x > 1000) xinc = -1;
+    if (y < 0) yinc = 1;
+    if (y > 800) yinc = -1;
+    x += xinc;
+    y += yinc;
+    int switchy = (int) random(0, 25);
+    if (switchy == 0) {
+      int switcher = (int) random(0, 2);
+      if (switcher == 0) xinc = (int) random(-1, 2);
+      if (switcher == 1) yinc = (int) random(-1, 2);
+    }
   }
   
   void display() {
