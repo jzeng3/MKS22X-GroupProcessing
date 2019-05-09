@@ -170,8 +170,8 @@ class Ball extends Thing implements Moveable {
     // System.out.println( path );
     // path 0: random movement
     if (path == 0){
-        x += Math.abs( rand1.nextInt() % 10) + 5;
-        y += Math.abs( rand1.nextInt() % 20) + 10;
+        x += Math.abs( rand1.nextInt() % 2) + 5;
+        y += Math.abs( rand1.nextInt() % 2) + 10;
     }  
     // path 1: set direction and speed
     else if (path == 1){
@@ -200,12 +200,34 @@ class Ball extends Thing implements Moveable {
     
     // transport ball to center of the screen if it passes the boundaries
     if ( (int)x <= 0 || (int)x >= width || (int)y <= 0 || (int)y >= height){
-      x = 0;
-      y = 0;
+      bounce();
     }
     
   }
+  
+  void bounce(){
+    if (path == 1){
+      if ( (int)x <= 0 && (int)y <= 0 ){
+        x_speed *= -1;
+        y_speed *= -1;
+      }
+      else if ( (int)x >= width && (int)y <= 0){
+        x_speed *= -1;
+        y_speed *= -1;
+      }
+      else if ( (int)x <= 0 && (int)y >= height){
+        x_speed *= -1;
+        y_speed *= -1; 
+      }
+      else if ( (int)x >= width  && (int)y >= height){
+        x_speed *= -1;
+        y_speed *= -1;
+      }
+    }
+  }
+  
 }
+
 
 /*DO NOT EDIT THE REST OF THIS */
 
