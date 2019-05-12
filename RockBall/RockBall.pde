@@ -238,8 +238,8 @@ class Ball extends Thing implements Moveable {
   
   int x_direction = Math.abs( rand1.nextInt()) % 2;
   int y_direction = Math.abs( rand1.nextInt()) % 2;
-  int x_speed = Math.abs( rand1.nextInt() % 10) + 1;
-  int y_speed =  Math.abs( rand1.nextInt() % 10) + 1;
+  int x_speed = Math.abs( rand1.nextInt() % 5) + 1;
+  int y_speed =  Math.abs( rand1.nextInt() % 5) + 1;
   
   void move() {
     // System.out.println( path );
@@ -340,15 +340,17 @@ void draw() {
     thing.move();
      // testing Collideable
   for( Collideable c : ListOfCollideables) {
+    if ((Thing)thing instanceof Ball){
+      Ball t = (Ball)thing;
      if ( c.isTouching( (Thing) thing )){
-       if ((Thing)thing instanceof Ball){
-       fill(255,0,0);
-        
-        Ball t = (Ball)thing;
+        fill(0,0,255);
         t.changeColor(true);
         rect( t.getX(), t.getY(), 10, 10); 
         System.out.println("touching!");
        }
+     else{
+        t.changeColor(false);
+     }
       } 
   }
   }
