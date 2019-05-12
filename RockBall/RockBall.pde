@@ -328,19 +328,7 @@ void setup() {
     thingsToMove.add(m);
     ListOfCollideables.add(m);
   }
-  
-  // testing Collideable
-  for (int b = 0; b < ListOfBalls.size(); b++){
-  for( Collideable c : ListOfCollideables) {
-     if ( c.isTouching( ListOfBalls.get(b) )){
-       fill(255,0,0);
-       rect( ListOfBalls.get(b).getX(), ListOfBalls.get(b).getY(), 100, 100); 
-        ListOfBalls.get(b).changeColor(true);
-        System.out.println("touching!");
-      }
-     
-  }
-  }
+ 
 }
 void draw() {
   background(255);
@@ -351,4 +339,18 @@ void draw() {
   for (Moveable thing : thingsToMove) {
     thing.move();
   }
+  
+  // testing Collideable
+  for (int b = 0; b < ListOfBalls.size(); b++){
+  for( Collideable c : ListOfCollideables) {
+     if ( c.isTouching( ListOfBalls.get(b) )){
+       fill(255,0,0);
+       //rect( ListOfBalls.get(b).getX(), ListOfBalls.get(b).getY(), 100, 100); 
+        ListOfBalls.get(b).changeColor(true);
+        System.out.println("touching!");
+      } 
+  }
+  }
+  
+  
 }
