@@ -134,7 +134,11 @@ class Ball extends Thing implements Moveable {
   PImage img = loadImage("SoccerBall.png");
   int color1; 
   int color2;
-  int color3; 
+  int color3;
+  
+  boolean colorChange;
+  
+  
   Ball(float x, float y) {
     super(x, y);
     type = Math.abs(rand.nextInt() % 3);
@@ -143,25 +147,54 @@ class Ball extends Thing implements Moveable {
     color1 = Math.abs(rand.nextInt() % 256);
     color2 = Math.abs(rand.nextInt() % 256);
     color3 = Math.abs(rand.nextInt() % 256);
+    colorChange = false;
+  }
+  
+  float getX(){
+    return super.x;
+  }
+  float getY(){
+    return super.y;
   }
   
   void display() {
    // System.out.println(type);
     // type 0: make a simple circle
     if (type == 0){
-      fill(color1, color2, color3);
+      if (colorChange){
+        System.out.println("color change = true");
+        fill(255,0,0);
+       
+      }
+      if (!colorChange){
+            System.out.println("color change = false");
+            fill(color1, color2, color3);
+      }
       ellipseMode(CENTER);
       ellipse(x, y, 50,50); 
       
     }
     // type 1: make a football
     if (type == 1){
-       fill(color1);
+      if (!colorChange){
+        System.out.println("color change = false");
+        fill(color1);
+        
+      }
+      if (colorChange){
+        System.out.println("color change = true");
+        fill(255,0,0);
+      }
       ellipseMode(CENTER);
       // ball silhouette
       ellipse(x, y, 25, 50); 
       
-      fill(color2);
+      if (!colorChange){
+        fill(color1);
+      }
+      if (colorChange){
+        fill(0);
+      }
       rectMode(CENTER);
       // vertical stripe
       rect(x, y, 5, 20); 
@@ -184,22 +217,22 @@ class Ball extends Thing implements Moveable {
     // type 2: soccer ball image
     if (type == 2){
     image(img,  x, y,50,50);
-    tint(color1, color2, color3);
+    if (colorChange){
+      System.out.println("color change = true");
+      tint(255,0,0);
+      
+    }
+    if (! colorChange){
+      System.out.println("color change = false");
+      tint(color1, color2, color3);
+    }
     }
   }
-  
+  // change color to red?
   void changeColor(boolean change){
-    int temp1 = color1;
-    int temp2 = color2;
-    int temp3 = color3; 
+    colorChange = change;
     if (change){
-    color1 = 255;
-    color2 = 0;
-    color3 = 0;
-    }else{
-      color1 = temp1;
-      color2 = temp2; 
-      color3 = temp3; 
+    System.out.println("change??: "+ change);
     }
   }
   
@@ -211,7 +244,7 @@ class Ball extends Thing implements Moveable {
   void move() {
     // System.out.println( path );
     // path 0: random movement
-    // transport ball to center of the screen if it passes the boundaries
+    // bounce ball if it passes boundaries
     if ( (int)x <= 0 || (int)x >= width || (int)y <= 0 || (int)y >= height){
       bounce();
     }
@@ -297,11 +330,15 @@ void setup() {
   }
   
   // testing Collideable
-  for (Ball b : ListOfBalls){
+  for (int b = 0; b < ListOfBalls.size(); b++){
   for( Collideable c : ListOfCollideables) {
-     if ( c.isTouching(b)){
+     if ( c.isTouching( ListOfBalls.get(b) )){
+       fill(255,0,0);
+       rect( ListOfBalls.get(b).getX(), ListOfBalls.get(b).getY(), 100, 100); 
+        ListOfBalls.get(b).changeColor(true);
         System.out.println("touching!");
       }
+     
   }
   }
 }
