@@ -20,9 +20,11 @@ abstract class Thing implements Displayable {
     this.y = y;
   }
   abstract void display();
+  
+  abstract void changeColor(boolean change);
 }
 
-class Rock extends Thing {
+class Rock extends Thing implements Collideable {
   Random rand = new Random(); 
   int type; // type of rock 
   float[] Xnum;
@@ -30,6 +32,8 @@ class Rock extends Thing {
   PImage rock = loadImage("Rock.png"); // rock image
   PImage rock2 = loadImage("Rock2.png");
   
+  void changeColor(boolean change){
+  }
   
   Rock(float x, float y) {
     super(x, y);
@@ -59,10 +63,23 @@ class Rock extends Thing {
       image(rock2, x, y, 50, 50);
     }
   }
+  
+   // preliminary code (will add code for overlap based on size of the rock)
+  boolean isTouching(Thing other){
+    // if rock and ball coordinates overlap, return true; else, return false
+    if (other.x >= this.x - 50 && other.x <= this.x + 80
+     && other.y >= this.y - 50 && other.y <= this.y + 80){
+      other.changeColor(true);
+      return true;
+    }
+    other.changeColor(false);
+    return false;
+  }
+  
 }
 
 
-public class LivingRock extends Rock implements Moveable, Collideable {
+public class LivingRock extends Rock implements Moveable {
   int xinc;
   int yinc;
   Random rand1 = new Random();
@@ -106,14 +123,6 @@ public class LivingRock extends Rock implements Moveable, Collideable {
  
   } 
   
-  // preliminary code (will add code for overlap based on size of the rock)
-  boolean isTouching(Thing other){
-    // if rock and ball coordinates overlap, return true; else, return false
-    if (x == other.x && y == other.y){
-      return true;
-    }
-    return false;
-  }
   
 }
 
@@ -179,6 +188,21 @@ class Ball extends Thing implements Moveable {
     }
   }
   
+  void changeColor(boolean change){
+    int temp1 = color1;
+    int temp2 = color2;
+    int temp3 = color3; 
+    if (change){
+    color1 = 255;
+    color2 = 0;
+    color3 = 0;
+    }else{
+      color1 = temp1;
+      color2 = temp2; 
+      color3 = temp3; 
+    }
+  }
+  
   int x_direction = Math.abs( rand1.nextInt()) % 2;
   int y_direction = Math.abs( rand1.nextInt()) % 2;
   int x_speed = Math.abs( rand1.nextInt() % 10) + 1;
@@ -232,9 +256,11 @@ class Ball extends Thing implements Moveable {
     int y_bound2 = height - bound;
     
     if (path == 1){
+     
         x_speed *= -1;
         y_speed *= -1;
     }
+    
   }
   
 }
@@ -244,35 +270,40 @@ class Ball extends Thing implements Moveable {
 
 ArrayList<Displayable> thingsToDisplay;
 ArrayList<Moveable> thingsToMove;
-//ArrayList<Collideable> ListOfCollideables;
+ArrayList<Collideable> ListOfCollideables;
+ArrayList<Ball> ListOfBalls;
 
 void setup() {
   size(1000, 800);
 
   thingsToDisplay = new ArrayList<Displayable>();
   thingsToMove = new ArrayList<Moveable>();
+  ListOfBalls = new ArrayList<Ball>();
+  ListOfCollideables = new ArrayList<Collideable>();
   for (int i = 0; i < 10; i++) {
     Ball b = new Ball(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(b);
     thingsToMove.add(b);
+    ListOfBalls.add(b);
     Rock r = new Rock(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(r);
+    ListOfCollideables.add(r);
   }
   for (int i = 0; i < 3; i++) {
     LivingRock m = new LivingRock(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(m);
     thingsToMove.add(m);
-  //  ListOfCollideables.add(m);
+    ListOfCollideables.add(m);
   }
   
   // testing Collideable
-  /*ListOfCollideables = new ArrayList<Collideable>();
-  Ball b = new Ball(100,100);
+  for (Ball b : ListOfBalls){
   for( Collideable c : ListOfCollideables) {
      if ( c.isTouching(b)){
         System.out.println("touching!");
       }
-  }*/
+  }
+  }
 }
 void draw() {
   background(255);
