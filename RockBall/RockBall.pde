@@ -67,8 +67,8 @@ class Rock extends Thing implements Collideable {
    // preliminary code (will add code for overlap based on size of the rock)
   boolean isTouching(Thing other){
     // if rock and ball coordinates overlap, return true; else, return false
-    if (other.x >= this.x - 50 && other.x <= this.x + 80
-     && other.y >= this.y - 50 && other.y <= this.y + 80){
+    if (other.x >= this.x - 100 && other.x <= this.x + 100
+     && other.y >= this.y - 100 && other.y <= this.y + 100){
       other.changeColor(true);
       return true;
     }
@@ -338,19 +338,19 @@ void draw() {
   }
   for (Moveable thing : thingsToMove) {
     thing.move();
-  }
-  
-  // testing Collideable
-  for (int b = 0; b < ListOfBalls.size(); b++){
+     // testing Collideable
   for( Collideable c : ListOfCollideables) {
-     if ( c.isTouching( ListOfBalls.get(b) )){
+     if ( c.isTouching( (Thing) thing )){
+       if ((Thing)thing instanceof Ball){
        fill(255,0,0);
-       //rect( ListOfBalls.get(b).getX(), ListOfBalls.get(b).getY(), 100, 100); 
-        ListOfBalls.get(b).changeColor(true);
+        
+        Ball t = (Ball)thing;
+        t.changeColor(true);
+        rect( t.getX(), t.getY(), 10, 10); 
         System.out.println("touching!");
+       }
       } 
   }
   }
-  
-  
-}
+  }
+ 
