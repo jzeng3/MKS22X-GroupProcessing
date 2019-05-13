@@ -57,7 +57,7 @@ class Rock extends Thing implements Collideable {
     }
     */
     if (type == 0) {
-      image(rock, x, y, 80,50);
+      image(rock, x, y, 50,50);
     }
     if (type == 1) {
       image(rock2, x, y, 50, 50);
@@ -67,9 +67,10 @@ class Rock extends Thing implements Collideable {
    // preliminary code (will add code for overlap based on size of the rock)
   boolean isTouching(Thing other){
     // if rock and ball coordinates overlap, return true; else, return false
-    if (other.x >= this.x - 100 && other.x <= this.x + 100
-     && other.y >= this.y - 100 && other.y <= this.y + 100){
+    if (other.x >= this.x - 50 && other.x <= this.x + 50
+     && other.y >= this.y - 50 && other.y <= this.y + 50){
       other.changeColor(true);
+      
       return true;
     }
     other.changeColor(false);
@@ -111,8 +112,8 @@ public class LivingRock extends Rock implements Moveable {
     super.display();
     fill(255, 255, 255);
     if (type == 0) {
-      ellipse(x + 50, y + 15, 10, 5);
-      ellipse(x + 30, y + 15, 10, 5);
+      ellipse(x + 35, y + 15, 10, 5);
+      ellipse(x + 15, y + 15, 10, 5);
     }
     if (type == 1) {
       ellipse(x + 35, y + 15, 10, 5);
@@ -158,7 +159,24 @@ class Ball extends Thing implements Moveable {
   }
   
   void display() {
-   // System.out.println(type);
+    for(int i = 0; i < ListOfCollideables.size(); i++) {
+     if ( ListOfCollideables.get(i).isTouching( (Thing)this)){
+        fill(0,0,255);
+        rect( this.x, this.y, 10, 10);  
+        changeColor(true);
+        color1 = 255;
+        color2 = 0; 
+        color3 = 0; 
+        this.x_speed *= -1;
+        this.y_speed *= -1;
+       System.out.println("touching!");
+       }
+     else{
+        changeColor(false);
+       
+     }
+  }
+
     // type 0: make a simple circle
     if (type == 0){
       if (colorChange){
@@ -178,7 +196,7 @@ class Ball extends Thing implements Moveable {
     if (type == 1){
       if (!colorChange){
         System.out.println("color change = false");
-        fill(color1);
+        fill(color1,0,0);
         
       }
       if (colorChange){
@@ -190,10 +208,10 @@ class Ball extends Thing implements Moveable {
       ellipse(x, y, 25, 50); 
       
       if (!colorChange){
-        fill(color1);
+        fill(color1,0,0);
       }
       if (colorChange){
-        fill(0);
+        fill(0,color2,0);
       }
       rectMode(CENTER);
       // vertical stripe
@@ -318,6 +336,8 @@ void setup() {
     thingsToDisplay.add(b);
     thingsToMove.add(b);
     ListOfBalls.add(b);
+  }
+  for (int i = 0; i < 10; i++){
     Rock r = new Rock(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(r);
     ListOfCollideables.add(r);
@@ -332,27 +352,15 @@ void setup() {
 }
 void draw() {
   background(255);
-
-  for (Displayable thing : thingsToDisplay) {
-    thing.display();
+ 
+  for (int i = 0; i < thingsToDisplay.size(); i++) {
+    thingsToDisplay.get(i).display();
+       // testing Collideable
+  
   }
+
   for (Moveable thing : thingsToMove) {
     thing.move();
-     // testing Collideable
-  for( Collideable c : ListOfCollideables) {
-    if ((Thing)thing instanceof Ball){
-      Ball t = (Ball)thing;
-     if ( c.isTouching( (Thing) thing )){
-        fill(0,0,255);
-        t.changeColor(true);
-        rect( t.getX(), t.getY(), 10, 10); 
-        System.out.println("touching!");
-       }
-     else{
-        t.changeColor(false);
-     }
-      } 
-  }
   }
   }
  
