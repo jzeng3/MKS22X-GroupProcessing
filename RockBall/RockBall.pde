@@ -133,9 +133,18 @@ class Ball extends Thing implements Moveable {
   int type;
   int path; 
   PImage img = loadImage("SoccerBall.png");
+  // current colors
   int color1; 
   int color2;
   int color3;
+  // original colors 
+  int OGcolor1;
+  int OGcolor2; 
+  int OGcolor3; 
+  // collision colors
+  int Ccolor1; 
+  int Ccolor2; 
+  int Ccolor3; 
   
   boolean colorChange;
   
@@ -146,13 +155,23 @@ class Ball extends Thing implements Moveable {
     super(x, y);
     beginX = x;
     beginY = y;
-    
+    // type and path of ball 
     type = Math.abs(rand.nextInt() % 2) + 1;
-    //path = Math.abs(rand1.nextInt() % 2) + 1;
-    path = 2;
+    path = Math.abs(rand1.nextInt() % 2) + 1;
+  
+    // color (rgb values)
     color1 = Math.abs(rand.nextInt() % 256);
     color2 = Math.abs(rand.nextInt() % 256);
     color3 = Math.abs(rand.nextInt() % 256);
+    // original colors
+    OGcolor1 = color1; 
+    OGcolor2 = color2; 
+    OGcolor3 = color3; 
+    // collision colors
+    int Ccolor1 = 255;
+    int Ccolor2 = 0; 
+    int Ccolor3 = 0;
+    // change colors?
     colorChange = false;
   }
   
@@ -162,45 +181,36 @@ class Ball extends Thing implements Moveable {
   float getY(){
     return super.y;
   }
+  void setColor(int r, int g, int b){
+    color1 = r;
+    color2 = g;
+    color3 = b;
+  }
   
-  void display() {
+  // see if ball is touching rock or living rock, then change color of ball while touching 
+  void testCollide(){
     for(int i = 0; i < ListOfCollideables.size(); i++) {
      if ( ListOfCollideables.get(i).isTouching( (Thing)this)){
         fill(0,0,255);
         rect( this.x, this.y, 10, 10);  
         changeColor(true);
-        color1 = 255;
-        color2 = 0; 
-        color3 = 0; 
+        setColor(Ccolor1, Ccolor2, Ccolor3);
         this.x_speed *= -1;
         this.y_speed *= -1;
-     //  System.out.println("touching!");
+   
        }
      else{
-        changeColor(false);
-       
+        setColor(OGcolor1, OGcolor2, OGcolor3); 
      }
   }
+  }
+  void display() {
+    testCollide();
 
-    // type 0: make a simple circle
-    if (type == 0){
-      if (colorChange){
-        //System.out.println("color change = true");
-        fill(255,0,0);
-       
-      }
-      if (!colorChange){
-            //System.out.println("color change = false");
-            fill(color1, color2, color3);
-      }
-      ellipseMode(CENTER);
-      ellipse(x, y, 50,50); 
-      
-    }
     // type 1: make a football
     if (type == 1){
       if (!colorChange){
-      //  System.out.println("color change = false");
+
         fill(color1,0,0);
         
       }
@@ -335,6 +345,44 @@ class Ball extends Thing implements Moveable {
   
 }
 
+class BallA extends Ball{
+  public BallA(float x, float y){
+    super(x,y); 
+    super.type = 1; 
+    super.path = 1;
+    super.Ccolor1 = 0;
+    super.Ccolor2 = 255;
+    super.Ccolor3 = 0;
+  }
+}
+
+class BallB extends Ball{
+  public BallB(float x, float y){
+    super(x,y); 
+    super.type = 2; 
+    super.path = 2;
+    super.Ccolor1 = 0;
+    super.Ccolor2 = 0;
+    super.Ccolor3 = 255;
+  }
+  
+  void testCollide(){
+    for(int i = 0; i < ListOfCollideables.size(); i++) {
+     if ( ListOfCollideables.get(i).isTouching( (Thing)this)){
+        fill(0,0,255);
+        rect( this.x, this.y, 10, 10);  
+        changeColor(true);
+        setColor(Ccolor1, Ccolor2, Ccolor3);
+        // bounce back in reverse parabola 
+        super.increment *= -1; 
+ 
+       }
+     else{
+        setColor(OGcolor1, OGcolor2, OGcolor3); 
+     }
+  }
+  }
+}
 
 /*DO NOT EDIT THE REST OF THIS */
 
@@ -352,7 +400,13 @@ void setup() {
   ListOfCollideables = new ArrayList<Collideable>();
   
   for (int i = 0; i < 10; i++) {
-    Ball b = new Ball(50+random(width-100), 50+random(height-100));
+    Ball a = new BallA(50+random(width-100), 50+random(height-100));
+    thingsToDisplay.add(a);
+    thingsToMove.add(a);
+    ListOfBalls.add(a);
+  }
+  for (int i = 0; i < 10; i++) {
+    BallB b = new BallB(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(b);
     thingsToMove.add(b);
     ListOfBalls.add(b);
