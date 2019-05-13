@@ -56,7 +56,7 @@ class Rock extends Thing implements Collideable {
       endShape(CLOSE);
     }
     */
-    if (type == 0) {
+   if (type == 0) {
       image(rock, x, y, 50,50);
     }
     if (type == 1) {
@@ -139,12 +139,17 @@ class Ball extends Thing implements Moveable {
   
   boolean colorChange;
   
+  float beginX;
+  float beginY;
   
   Ball(float x, float y) {
     super(x, y);
-    type = Math.abs(rand.nextInt() % 3);
-    //path = Math.abs(rand1.nextInt() % 3);
-    path = 1;
+    beginX = x;
+    beginY = y;
+    
+    type = Math.abs(rand.nextInt() % 2) + 1;
+    //path = Math.abs(rand1.nextInt() % 2) + 1;
+    path = 2;
     color1 = Math.abs(rand.nextInt() % 256);
     color2 = Math.abs(rand.nextInt() % 256);
     color3 = Math.abs(rand.nextInt() % 256);
@@ -169,7 +174,7 @@ class Ball extends Thing implements Moveable {
         color3 = 0; 
         this.x_speed *= -1;
         this.y_speed *= -1;
-       System.out.println("touching!");
+     //  System.out.println("touching!");
        }
      else{
         changeColor(false);
@@ -180,12 +185,12 @@ class Ball extends Thing implements Moveable {
     // type 0: make a simple circle
     if (type == 0){
       if (colorChange){
-        System.out.println("color change = true");
+        //System.out.println("color change = true");
         fill(255,0,0);
        
       }
       if (!colorChange){
-            System.out.println("color change = false");
+            //System.out.println("color change = false");
             fill(color1, color2, color3);
       }
       ellipseMode(CENTER);
@@ -195,12 +200,12 @@ class Ball extends Thing implements Moveable {
     // type 1: make a football
     if (type == 1){
       if (!colorChange){
-        System.out.println("color change = false");
+      //  System.out.println("color change = false");
         fill(color1,0,0);
         
       }
       if (colorChange){
-        System.out.println("color change = true");
+       // System.out.println("color change = true");
         fill(255,0,0);
       }
       ellipseMode(CENTER);
@@ -236,12 +241,12 @@ class Ball extends Thing implements Moveable {
     if (type == 2){
     image(img,  x, y,50,50);
     if (colorChange){
-      System.out.println("color change = true");
+     // System.out.println("color change = true");
       tint(255,0,0);
       
     }
     if (! colorChange){
-      System.out.println("color change = false");
+     // System.out.println("color change = false");
       tint(color1, color2, color3);
     }
     }
@@ -249,9 +254,6 @@ class Ball extends Thing implements Moveable {
   // change color to red?
   void changeColor(boolean change){
     colorChange = change;
-    if (change){
-    System.out.println("change??: "+ change);
-    }
   }
   
   int x_direction = Math.abs( rand1.nextInt()) % 2;
@@ -259,18 +261,24 @@ class Ball extends Thing implements Moveable {
   int x_speed = Math.abs( rand1.nextInt() % 5) + 1;
   int y_speed =  Math.abs( rand1.nextInt() % 5) + 1;
   
+  float increment = 0.1;
+  float power = 4;
+  float endX = width - 50; 
+  float endY = height - 50; 
+  int direction = 1; 
+  
   void move() {
-    // System.out.println( path );
-    // path 0: random movement
+    
     // bounce ball if it passes boundaries
-    if ( (int)x <= 0 || (int)x >= width || (int)y <= 0 || (int)y >= height){
+    if ( (int)x <= 100 || (int)x >= width - 100 || (int)y <= 100 || (int)y >= height - 100){
       bounce();
     }
     
-    if (path == 0){
+   /* if (path == 0){
         x += Math.abs( rand1.nextInt() % 2) + 5;
         y += Math.abs( rand1.nextInt() % 2) + 10;
-    }  
+    } */ 
+    
     // path 1: set direction and speed
     else if (path == 1){
     if (x_direction == 0){
@@ -286,14 +294,14 @@ class Ball extends Thing implements Moveable {
       y -= y_speed;
     }
     }
-    // path 2: move along ellipses
-    float t = millis()/1000.0;
-    float r1Factor = Math.abs( rand1.nextInt() % 5) + 1;
-    float r2Factor = Math.abs( rand1.nextInt() % 5) + 1;
-    if (path == 2){
-      System.out.println("path = 2");
-      x = (int)(x + (height / r1Factor)*cos(t));
-      y = (int)(y + (height / r2Factor)*sin(t));
+    
+    // path 2: move along parabolas
+    
+    if (path == 2 && increment < 1 && increment > 0){
+      x = beginX + (increment *( endX - beginX)); 
+      y = beginY + ((pow(increment, power) * (endY - beginY)));
+      increment += direction*0.01; 
+      
     }
    
     
@@ -310,6 +318,17 @@ class Ball extends Thing implements Moveable {
      
         x_speed *= -1;
         y_speed *= -1;
+    }
+    
+    if (path == 2){
+      System.out.println("power: "+ power + "increment: "+increment);
+      float oldX = beginX; 
+      float oldY = beginY; 
+      beginX = x;
+      beginY = y; 
+      endX = oldX;
+      endY = oldY;
+      direction *= -1; 
     }
     
   }
@@ -331,6 +350,7 @@ void setup() {
   thingsToMove = new ArrayList<Moveable>();
   ListOfBalls = new ArrayList<Ball>();
   ListOfCollideables = new ArrayList<Collideable>();
+  
   for (int i = 0; i < 10; i++) {
     Ball b = new Ball(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(b);
@@ -341,6 +361,7 @@ void setup() {
     Rock r = new Rock(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(r);
     ListOfCollideables.add(r);
+
   }
   for (int i = 0; i < 3; i++) {
     LivingRock m = new LivingRock(50+random(width-100), 50+random(height-100));
