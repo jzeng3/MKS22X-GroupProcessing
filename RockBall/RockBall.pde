@@ -1,4 +1,6 @@
 import java.util.*;
+ArrayList<LivingRock> livingRocks = new ArrayList<LivingRock>();
+
 
 interface Displayable {
   void display();
@@ -22,6 +24,19 @@ abstract class Thing implements Displayable {
   abstract void display();
   
   abstract void changeColor(boolean change);
+  
+  boolean isTouching(Thing other) {
+    if (dist(x, y, other.xcorCenter(), other.ycorCenter()) <= 50) {
+      return true;
+    }
+    return false;
+  }
+  float xcorCenter() {
+    return x + 25;
+  }
+  float ycorCenter() {
+    return y + 25;
+  }
 }
 
 class Rock extends Thing implements Collideable {
@@ -81,30 +96,43 @@ class Rock extends Thing implements Collideable {
 
 
 public class LivingRock extends Rock implements Moveable {
-  int xinc;
-  int yinc;
   Random rand1 = new Random();
   int path; // type of path 
+  float xSpeed;
+  float ySpeed;
+  int xMult;
+  int yMult;
   
   LivingRock(float x, float y) {
     super(x, y);
     path = Math.abs(rand1.nextInt()) % 3; // 0, 1, or 2
-    xinc = (int) random(-1, 2);
-    yinc = (int) random(-1, 2);
+    xSpeed = random(0, 2);
+    ySpeed = random(0, 2);
+    xMult = (int) random(-1, 2);
+    yMult = (int) random(-1, 2);
   }
-  void move() {
-    /* ONE PERSON WRITE THIS */
-    if (x < 0) xinc = 1;
-    if (x > 1000) xinc = -1;
-    if (y < 0) yinc = 1;
-    if (y > 800) yinc = -1;
-    x += xinc;
-    y += yinc;
+  void move() {  
+    if (x < 50) xMult = 1;
+    if (x > 950) xMult = -1;
+    if (y < 50) yMult = 1;
+    if (y > 750) yMult = -1;
+    x += xSpeed * xMult;
+    y += ySpeed * yMult;
     int switchy = (int) random(0, 25);
     if (switchy == 0) {
       int switcher = (int) random(0, 2);
-      if (switcher == 0) xinc = (int) random(-1, 2);
-      if (switcher == 1) yinc = (int) random(-1, 2);
+      ySpeed = random(0, 2);
+      xSpeed = random(0, 2);
+      if (switcher == 0) xMult = (int) random(-1, 2);
+      if (switcher == 1) yMult = (int) random(-1, 2);
+    }
+    for (LivingRock c : livingRocks) {
+      if (c.isTouching(this) && c != this) {
+        this.xMult *= -1;
+        this.yMult *= -1;
+        c.xMult *= -1;
+        c.yMult *= -1;
+      }
     }
   }
   
