@@ -81,6 +81,7 @@ public class LivingRock extends Rock implements Moveable {
     xinc = (int) random(-1, 2);
     yinc = (int) random(-1, 2);
   }
+  
   void move() {
     /* ONE PERSON WRITE THIS */
     if (x < 0) xinc = 1;
@@ -127,36 +128,45 @@ class Ball extends Thing implements Moveable, Collideable{
   int OGcolor1;
   int OGcolor2; 
   int OGcolor3; 
+  
   // current colors
   int color1;
   int color2;
   int color3;
-  
-  boolean colorChange;
-  
+ 
+  // for path 2
   float beginX;
   float beginY;
+  float factorA;
+  float factorB;
+  float factorC;
+  int x_dir;
   
-  String colorIs = "BLUE";
+  // collide color
+  String colorIs;
+  String collideColor;
+  
   Ball(float x, float y) {
     super(x, y);
+    w = 50;
+    l = 50;
+    // beginning coordinates 
     beginX = x;
     beginY = y;
+   
     // type and path of ball 
     type = Math.abs(rand.nextInt() % 2) + 1;
-   // type = 2;
-    if (type == 1){
-      w = 50; 
-      l = 50;
-    }
-    if (type == 2){
-      w = 50;
-      l = 50;
-    }
+    path = Math.abs(rand1.nextInt() % 2) + 1;
+    colorIs = "ORIGINAL";
+    collideColor = "RED";
     
-    path = 1;
- //   path = Math.abs(rand1.nextInt() % 2) + 1;
-  
+  // factors for path 2
+  if (path == 2){
+    x_dir = 1;
+    factorA = 200;
+    factorB = 0.05;
+    factorC = 0;
+  }
     // color (rgb values)
     color1 = Math.abs(rand.nextInt() % 256);
     color2 = Math.abs(rand.nextInt() % 256);
@@ -167,12 +177,12 @@ class Ball extends Thing implements Moveable, Collideable{
     OGcolor2 = color2; 
     OGcolor3 = color3; 
   }
+  // check if ball is touching rouch
   boolean isTouching(Thing other){
     if (other instanceof Rock){
       Rock r = (Rock)other;
       if ( (this.x >= r.x && this.x <= r.x + r.w || this.x + this.w >= r.x && this.x + this.w <= r.x + r.w)
         && (this.y >= r.y && this.y <= r.y + r.l || this.y + this.l >= r.y && this.y + this.w <= r.y + r.l) ){
-        // if ball strikes the center area of the rock
       return true;
         }
     }
@@ -185,30 +195,31 @@ class Ball extends Thing implements Moveable, Collideable{
   float getY(){
     return super.y;
   }
+  
   void setColor(String setColorTo){
-    if (setColorTo.equals("RED")){
-    colorIs = "RED";
+    if (setColorTo.equals(collideColor)){
+    colorIs = collideColor;
     color1 = 255;
     color2 = 0;
     color3 = 0;
     }
     else if (setColorTo.equals("ORIGINAL")){
-      colorIs = "BLUE";
+      colorIs = "ORIGINAL";
       color1 = OGcolor1;
       color2 = OGcolor2;
       color3 = OGcolor3;
     }
   }
+  
   String getColor(){
     return colorIs;
   }
   
   void display() {
-    tint(color1, color2, color3);
-    image(img2,  x, y,50,50);
     // type 1: make a football
     if (type == 1){
-      
+     tint(color1, color2, color3);
+    image(img2, x, y,50,50);
   
   /*    fill(color1,0,0);
        
@@ -243,28 +254,30 @@ class Ball extends Thing implements Moveable, Collideable{
     image(img,  x, y,50,50);
     }
   }
+  
+  
   int x_direction = Math.abs( rand1.nextInt()) % 2;
   int y_direction = Math.abs( rand1.nextInt()) % 2;
-  int x_speed = 1;
-  int y_speed =  1;
-  
-  float increment = 0.1;
-  float power = 4;
-  float endX = width - 50; 
-  float endY = height - 50; 
-  int direction = 1; 
+  int x_speed = (int)(PI*Math.random() * 5);
+  int y_speed = (int)(PI*Math.random() * 8);
   
   void move() {
+  
+    // bounce ball if it passes boundaries
+    bounce();
+    
+    // loop through collideables
     for(int i = 0; i < ListOfCollideables.size(); i++) {
      if (ListOfCollideables.get(i) instanceof Rock){
-        
+       
+       // if ball is touching rock, change color to red 
         Rock r = (Rock)ListOfCollideables.get(i);
         if ( this.isTouching(r) ){
-        System.out.println("Ball is touching rock");
-        //fill(0,0,255);
-        rect( this.x, this.y, 10, 10);  
-        this.setColor("RED");
-         System.out.println("set color = red");
+        this.setColor(collideColor);
+       // bounce the ball away based on the path type 
+       
+       // path 1: reverse x and/or y direction
+      if (path == 1){
         if ( (x_speed > 0 && this.x + this.w <= r.x + (r.w / 2) )
         || ( x_speed < 0 && this.x >= r.x + (r.w / 2) ) ){
           x_speed *= -1;
@@ -273,95 +286,102 @@ class Ball extends Thing implements Moveable, Collideable{
         || ( y_speed < 0 && this.y >= r.y + (r.l / 2) ) ){
           y_speed *= -1;
        } 
+      }
+      
+       // path 2: slow down the ball by increasing the period of the function
+       if (path == 2 && frameCount % 60 == 5){
+         factorB *= 0.85;
        }
      }
-     if (this.getColor().equals("RED") && frameCount % 60 == 4){
+       
+       
+     }
+     
+     // change back to original color after a second has passed
+     if (this.getColor().equals(collideColor) && frameCount % 60 == 4){
            setColor("ORIGINAL");
-           System.out.println("set color = original");
       }
     }
- 
-      
-    // bounce ball if it passes boundaries
-    bounce();
 
     // path 1: set direction and speed
     if (path == 1){
-    if (x_direction == 0){
       x += x_speed;
-    }
-    else if (x_direction == 1){
-      x -= x_speed;
-    }
-    if (y_direction == 0){
       y += y_speed;
     }
-    else if (y_direction == 1){
-      y -= y_speed;
-    }
-    }
     
-    // path 2: move along parabolas
-    
-    if (path == 2 && increment < 1 && increment > 0){
-      x = beginX + (increment *( endX - beginX)); 
-      y = beginY + ((pow(increment, power) * (endY - beginY)));
-      increment += direction*0.01; 
+    // path 2: change x-direction, and factorA in the sine function as needed
+    if (path == 2){
+           
+     if (x < 25 || x > width - 50){
+       x_dir *= -1;
+     }
+     if (y < 0 && frameCount % 30 == 10){
+       
+       y += factorA;
+      factorA *= 0.75;
       
+     }
+     else if (y >= height && frameCount % 30 == 10){
+       y -= factorA;
+       factorA *= 0.75; 
+     }
+     
+    if (x >= 0 && x <= width && y >= 0 && y < height){
+        x += x_dir;
+        y = factorA*sin(factorB*x) + beginY;
+
+     }
     }
-   
-    
   }
   
+  // bounce ball if reached edge of screen
   void bounce(){ 
     if (path == 1){
-        if (x < 0 || x > width){
+      if (x < 0 || x > width - 50){
+        x -= x_speed;
         x_speed *= -1;
     }
     if (y < 0  || y > height) {
-    y_speed *= -1;
+        y -= y_speed;
+        y_speed *= -1;
     }
-    
-    
-    
-    }
-    
-    if (path == 2){
-      System.out.println("power: "+ power + "increment: "+increment);
-      float oldX = beginX; 
-      float oldY = beginY; 
-      beginX = x;
-      beginY = y; 
-      endX = oldX;
-      endY = oldY;
-      direction *= -1; 
-    }
-    
+   }
   }
   
 }
 
+// type1, path1 ball, collide color is red
 class BallA extends Ball{
   public BallA(float x, float y){
     super(x,y); 
     super.type = 1; 
     super.path = 1;
-    super.color1 = 0;
-    super.color2 = 255;
-    super.color3 = 0;
   }
 }
 
+// type2, path2 ball, collide color is green
 class BallB extends Ball{
   public BallB(float x, float y){
     super(x,y); 
     super.type = 2; 
     super.path = 2;
-    super.color1 = 0;
-    super.color2 = 0;
-    super.color3 = 255;
+    super.collideColor = "GREEN";
   }
-
+  void setColor(String setColorTo){
+    if (setColorTo.equals(super.collideColor)){
+    super.colorIs = super.collideColor;
+    super.color1 = 0;
+    super.color2 = 255;
+    super.color3 = 0;
+    }
+    else if (setColorTo.equals("ORIGINAL")){
+      colorIs = "ORIGINAL";
+      super.color1 = super.OGcolor1;
+      super.color2 = super.OGcolor2;
+      super.color3 = super.OGcolor3;
+    }
+  }
+  
 }
 
 /*DO NOT EDIT THE REST OF THIS */
@@ -370,37 +390,34 @@ ArrayList<Displayable> thingsToDisplay;
 ArrayList<Moveable> thingsToMove;
 ArrayList<Collideable> ListOfCollideables;
 ArrayList<Ball> ListOfBalls;
-Ball b;
+
 void setup() {
   size(1000, 800);
   thingsToDisplay = new ArrayList<Displayable>();
   thingsToMove = new ArrayList<Moveable>();
   ListOfBalls = new ArrayList<Ball>();
   ListOfCollideables = new ArrayList<Collideable>();
-  
-   b = new Ball(0,0);
-   thingsToDisplay.add(b);
-   
-   
-  for (int i = 0; i < 5; i++) {
+ 
+ /* for (int i = 0; i < 10; i++) {
     Ball a = new Ball(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(a);
     thingsToMove.add(a);
     ListOfBalls.add(a);
     ListOfCollideables.add(a);
-  }
- /* for (int i = 0; i < 10; i++) {
+  }*/
+/*for (int i = 0; i < 10; i++) {
     Ball a = new BallA(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(a);
     thingsToMove.add(a);
     ListOfBalls.add(a);
-  }
-  for (int i = 0; i < 10; i++) {
-    BallB b = new BallB(50+random(width-100), 50+random(height-100));
+  }*/
+   for (int i = 0; i < 10; i++) {
+    Ball b = new BallB(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(b);
     thingsToMove.add(b);
     ListOfBalls.add(b);
-  }*/
+  }
+  
   for (int i = 0; i < 10; i++){
     Rock r = new Rock(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(r);
@@ -423,13 +440,6 @@ void draw() {
   }
   for (int i = 0; i < thingsToDisplay.size(); i++) {
     thingsToDisplay.get(i).display();
-  }
-  
-  if (frameCount % 120 == 40){
-  b.setColor("RED");
-  }
-  else{
-  b.setColor("ORIGINAL");
   }
   
   }
