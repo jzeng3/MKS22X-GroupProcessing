@@ -23,8 +23,6 @@ abstract class Thing implements Displayable {
   }
   abstract void display();
 
-  abstract void changeColor(boolean change);
-  
   boolean isTouching(Thing other) {
     if (dist(x, y, other.xcorCenter(), other.ycorCenter()) <= 50) {
       return true;
@@ -80,7 +78,7 @@ class Rock extends Thing implements Collideable {
    
   }
   
-   // preliminary code (will add code for overlap based on size of the rock)
+  // preliminary code (will add code for overlap based on size of the rock)
   boolean isTouching(Thing other){
     // if rock and ball coordinates overlap, return true; else, return false
     if (other.x >= this.x - 50 && other.x <= this.x + 50
