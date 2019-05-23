@@ -136,6 +136,7 @@ class Ball extends Thing implements Moveable, Collideable{
   float beginX;
   float beginY;
   
+  String colorIs = "BLUE";
   Ball(float x, float y) {
     super(x, y);
     beginX = x;
@@ -164,7 +165,6 @@ class Ball extends Thing implements Moveable, Collideable{
     OGcolor1 = color1; 
     OGcolor2 = color2; 
     OGcolor3 = color3; 
-
   }
   boolean isTouching(Thing other){
     if (other instanceof Rock){
@@ -184,19 +184,40 @@ class Ball extends Thing implements Moveable, Collideable{
   }
   void setColor(String setColorTo){
     if (setColorTo.equals("RED")){
+    colorIs = "RED";
     color1 = 255;
     color2 = 0;
     color3 = 0;
     }
     else if (setColorTo.equals("ORIGINAL")){
+      colorIs = "BLUE";
       color1 = 0;
       color2 = 0;
       color3 = 255;
     }
   }
+  String getColor(){
+    return colorIs;
+  }
   
   void display() {
-     
+     for(int i = 0; i < ListOfCollideables.size(); i++) {
+     if (ListOfCollideables.get(i) instanceof Rock){
+        
+        Rock r = (Rock)ListOfCollideables.get(i);
+        if ( this.isTouching(r) ){
+        System.out.println("Ball is touching rock");
+        //fill(0,0,255);
+        rect( this.x, this.y, 10, 10);  
+        this.setColor("RED");
+         System.out.println("set color = red");
+        }
+       }
+     }
+     if (this.getColor().equals("RED") && frameCount % 120 == 4){
+           setColor("ORIGINAL");
+           System.out.println("set color = original");
+      }
     // type 1: make a football
     if (type == 1){
   
@@ -229,8 +250,8 @@ class Ball extends Thing implements Moveable, Collideable{
     
     // type 2: soccer ball image
     if (type == 2){
-    image(img,  x, y,50,50);
     tint(color1, color2, color3);
+    image(img,  x, y,50,50);
     }
   }
   int x_direction = Math.abs( rand1.nextInt()) % 2;
@@ -245,28 +266,6 @@ class Ball extends Thing implements Moveable, Collideable{
   int direction = 1; 
   
   void move() {
-     float startTint = millis();
-     for(int i = 0; i < ListOfCollideables.size(); i++) {
-     if (ListOfCollideables.get(i) instanceof Rock){
-        
-        Rock r = (Rock)ListOfCollideables.get(i);
-        if ( this.isTouching(r) ){
-        startTint = millis();
-        tint(255,0,0);
-        System.out.println("Ball is touching rock");
-        //fill(0,0,255);
-        rect( this.x, this.y, 10, 10);  
-        this.setColor("RED");
-         System.out.println("set color = red");
-        }
-        else{
-         if (millis() - startTint > 2000){
-           setColor("ORIGINAL");
-         }
-         System.out.println("set color = original");
-        }
-       }
-     }
     // bounce ball if it passes boundaries
     if ( (int)x <= 0 || (int)x >= width  || (int)y <= 0 || (int)y >= height){
       bounce();
@@ -302,8 +301,13 @@ class Ball extends Thing implements Moveable, Collideable{
   
   void bounce(){ 
     if (path == 1){
-        x_speed *= -1;
-        y_speed *= -1;
+        if (x < 0 || x > width) {
+    x_speed *= -1;
+  }
+
+  if (y < 0  || y > height) {
+    y_speed *= -1;
+  }
     }
     
     if (path == 2){
@@ -362,7 +366,7 @@ void setup() {
    thingsToDisplay.add(b);
    
    
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 1; i++) {
     Ball a = new Ball(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(a);
     thingsToMove.add(a);
