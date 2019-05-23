@@ -120,6 +120,7 @@ class Ball extends Thing implements Moveable, Collideable{
   int type;
   int path; 
   PImage img = loadImage("SoccerBall.png");
+  PImage img2 = loadImage("Baseball.png");
   float w,l;
 
   // original colors 
@@ -142,10 +143,10 @@ class Ball extends Thing implements Moveable, Collideable{
     beginX = x;
     beginY = y;
     // type and path of ball 
-   // type = Math.abs(rand.nextInt() % 2) + 1;
-    type = 2;
+    type = Math.abs(rand.nextInt() % 2) + 1;
+   // type = 2;
     if (type == 1){
-      w = 25; 
+      w = 50; 
       l = 50;
     }
     if (type == 2){
@@ -203,11 +204,13 @@ class Ball extends Thing implements Moveable, Collideable{
   }
   
   void display() {
-     
+    tint(color1, color2, color3);
+    image(img2,  x, y,50,50);
     // type 1: make a football
     if (type == 1){
+      
   
-      fill(color1,0,0);
+  /*    fill(color1,0,0);
        
      ellipseMode(CORNER);
       // ball silhouette
@@ -230,7 +233,7 @@ class Ball extends Thing implements Moveable, Collideable{
       
      ellipseMode(CORNER);
       ellipse(x - 5,y,3,3);
-      ellipse(x + 5,y,3,3);
+      ellipse(x + 5,y,3,3);*/
       
     }
     
@@ -262,20 +265,22 @@ class Ball extends Thing implements Moveable, Collideable{
         rect( this.x, this.y, 10, 10);  
         this.setColor("RED");
          System.out.println("set color = red");
-       if (this.y + this.l <= r.y + (r.l / 4) || this.y >= r.y + (3 * r.l / 4)
-       && this.x >= r.x + (r.w / 4) && this.x <= r.x + (r.w / 2)){
-         y_speed *= -1;
-      }
-      else {
-        x_speed *= -1;
-      }
+        if ( (x_speed > 0 && this.x + this.w <= r.x + (r.w / 2) )
+        || ( x_speed < 0 && this.x >= r.x + (r.w / 2) ) ){
+          x_speed *= -1;
         }
+        if ( (y_speed > 0 && this.y + this.l <= r.y + (r.l / 2) )
+        || ( y_speed < 0 && this.y >= r.y + (r.l / 2) ) ){
+          y_speed *= -1;
        } 
+       }
      }
      if (this.getColor().equals("RED") && frameCount % 60 == 4){
            setColor("ORIGINAL");
            System.out.println("set color = original");
       }
+    }
+ 
       
     // bounce ball if it passes boundaries
     bounce();
