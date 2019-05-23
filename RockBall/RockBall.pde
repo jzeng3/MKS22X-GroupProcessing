@@ -28,36 +28,28 @@ class Rock extends Thing implements Collideable {
   int type; // type of rock 
   float[] Xnum;
   float[] Ynum;
+  float w;
+  float l;
   PImage rock = loadImage("Rock.png"); // rock image
   PImage rock2 = loadImage("Rock2.png");
 
   Rock(float x, float y) {
     super(x, y);
+    w = 50;
+    l = 50;
     type = Math.abs(rand.nextInt()) % 2; // 0 or 1
   }
 
    void display() {
-     for(int i = 0; i < ListOfCollideables.size(); i++) {
-     if (ListOfCollideables.get(i) instanceof Ball){
-       
-        Ball b = (Ball)ListOfCollideables.get(i);
-        if ( this.isTouching(b) ){
-        System.out.println("Rock is touching ball");
-        fill(0,0,255);
-        rect( b.x, b.y, 10, 10);  
-        b.setColor("RED");
-        b.x_speed *= -1;
-        b.y_speed *= -1;
-        }
-        else{
-          b.setColor("ORIGINAL");
-        }
-       }
-     }
+   noTint();
    if (type == 0) {
+      w = 50;
+      l = 50;
       image(rock, x, y, 50,50);
     }
     if (type == 1) {
+      w = 50;
+      l = 50;
       image(rock2, x, y, 50, 50);
     }
    
@@ -108,14 +100,14 @@ public class LivingRock extends Rock implements Moveable {
   void display() {
     super.display();
     fill(255, 255, 255);
-    if (type == 0) {
+  /*  if (type == 0) {
       ellipse(x + 35, y + 15, 10, 5);
       ellipse(x + 15, y + 15, 10, 5);
     }
     if (type == 1) {
       ellipse(x + 35, y + 15, 10, 5);
       ellipse(x + 15, y + 15, 10, 5);
-    }
+    }*/
  
   } 
   
@@ -128,6 +120,7 @@ class Ball extends Thing implements Moveable, Collideable{
   int type;
   int path; 
   PImage img = loadImage("SoccerBall.png");
+  float w,l;
 
   // original colors 
   int OGcolor1;
@@ -148,7 +141,17 @@ class Ball extends Thing implements Moveable, Collideable{
     beginX = x;
     beginY = y;
     // type and path of ball 
-    type = Math.abs(rand.nextInt() % 2) + 1;
+   // type = Math.abs(rand.nextInt() % 2) + 1;
+    type = 2;
+    if (type == 1){
+      w = 25; 
+      l = 50;
+    }
+    if (type == 2){
+      w = 50;
+      l = 50;
+    }
+    
     path = 1;
  //   path = Math.abs(rand1.nextInt() % 2) + 1;
   
@@ -156,6 +159,7 @@ class Ball extends Thing implements Moveable, Collideable{
     color1 = Math.abs(rand.nextInt() % 256);
     color2 = Math.abs(rand.nextInt() % 256);
     color3 = Math.abs(rand.nextInt() % 256);
+    
     // original colors
     OGcolor1 = color1; 
     OGcolor2 = color2; 
@@ -163,8 +167,15 @@ class Ball extends Thing implements Moveable, Collideable{
 
   }
   boolean isTouching(Thing other){
-    return true;
+    if (other instanceof Rock){
+      Rock r = (Rock)other;
+      if ( (this.x >= r.x && this.x <= r.x + r.w || this.x + this.w >= r.x && this.x + this.w <= r.x + r.w)
+        && (this.y >= r.y && this.y <= r.y + r.l || this.y + this.l >= r.y && this.y + this.w <= r.y + r.l) )
+      return true;
+    }
+    return false;
   }
+  
   float getX(){
     return super.x;
   }
@@ -178,53 +189,54 @@ class Ball extends Thing implements Moveable, Collideable{
     color3 = 0;
     }
     else if (setColorTo.equals("ORIGINAL")){
-      color1 = OGcolor1;
-      color2 = OGcolor2;
-      color3 = OGcolor3;
+      color1 = 0;
+      color2 = 0;
+      color3 = 255;
     }
   }
   
   void display() {
+     
     // type 1: make a football
     if (type == 1){
   
       fill(color1,0,0);
        
-      ellipseMode(CENTER);
+     ellipseMode(CORNER);
       // ball silhouette
       ellipse(x, y, 25, 50); 
       
       fill(0,color2,0);
-      rectMode(CENTER);
       // vertical stripe
-      rect(x, y, 5, 20); 
+      rect(x - 1, y - 8, 5, 20); 
       
       // horizontal lines
-      rect(x, y - 20, 12, 5,8); 
-      rect(x, y + 20, 12, 5,8); 
+      rect(x -5, y - 20, 12, 5,8); 
+      rect(x-5 , y + 15, 12, 5,8); 
       
       //eyes
       fill(255);
-      ellipseMode(CENTER);
+     ellipseMode(CORNER);
       ellipse(x - 5,y,7,10);
       ellipse(x + 5,y,7,10);
       fill(0);
-      ellipseMode(CENTER);
+      
+     ellipseMode(CORNER);
       ellipse(x - 5,y,3,3);
       ellipse(x + 5,y,3,3);
       
     }
+    
     // type 2: soccer ball image
     if (type == 2){
-    noTint();
-    tint(color1, color2, color3);
     image(img,  x, y,50,50);
+    tint(color1, color2, color3);
     }
   }
   int x_direction = Math.abs( rand1.nextInt()) % 2;
   int y_direction = Math.abs( rand1.nextInt()) % 2;
-  int x_speed = Math.abs( rand1.nextInt() % 5) + 1;
-  int y_speed =  Math.abs( rand1.nextInt() % 5) + 1;
+  int x_speed = 1;
+  int y_speed =  1;
   
   float increment = 0.1;
   float power = 4;
@@ -233,7 +245,28 @@ class Ball extends Thing implements Moveable, Collideable{
   int direction = 1; 
   
   void move() {
-    
+     float startTint = millis();
+     for(int i = 0; i < ListOfCollideables.size(); i++) {
+     if (ListOfCollideables.get(i) instanceof Rock){
+        
+        Rock r = (Rock)ListOfCollideables.get(i);
+        if ( this.isTouching(r) ){
+        startTint = millis();
+        tint(255,0,0);
+        System.out.println("Ball is touching rock");
+        //fill(0,0,255);
+        rect( this.x, this.y, 10, 10);  
+        this.setColor("RED");
+         System.out.println("set color = red");
+        }
+        else{
+         if (millis() - startTint > 2000){
+           setColor("ORIGINAL");
+         }
+         System.out.println("set color = original");
+        }
+       }
+     }
     // bounce ball if it passes boundaries
     if ( (int)x <= 0 || (int)x >= width  || (int)y <= 0 || (int)y >= height){
       bounce();
@@ -317,15 +350,19 @@ ArrayList<Displayable> thingsToDisplay;
 ArrayList<Moveable> thingsToMove;
 ArrayList<Collideable> ListOfCollideables;
 ArrayList<Ball> ListOfBalls;
-
+Ball b;
 void setup() {
   size(1000, 800);
-
   thingsToDisplay = new ArrayList<Displayable>();
   thingsToMove = new ArrayList<Moveable>();
   ListOfBalls = new ArrayList<Ball>();
   ListOfCollideables = new ArrayList<Collideable>();
-  for (int i = 0; i < 10; i++) {
+  
+   b = new Ball(0,0);
+   thingsToDisplay.add(b);
+   
+   
+  for (int i = 0; i < 2; i++) {
     Ball a = new Ball(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(a);
     thingsToMove.add(a);
@@ -348,7 +385,6 @@ void setup() {
     Rock r = new Rock(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(r);
     ListOfCollideables.add(r);
-
   }
   for (int i = 0; i < 3; i++) {
     LivingRock m = new LivingRock(50+random(width-100), 50+random(height-100));
@@ -361,14 +397,20 @@ void setup() {
 void draw() {
   background(255);
  
-  for (int i = 0; i < thingsToDisplay.size(); i++) {
-    thingsToDisplay.get(i).display();
-       // testing Collideable
-  
-  }
-
+ 
   for (Moveable thing : thingsToMove) {
     thing.move();
   }
+  for (int i = 0; i < thingsToDisplay.size(); i++) {
+    thingsToDisplay.get(i).display();
+  }
+  
+  if (frameCount % 120 == 40){
+  b.setColor("RED");
+  }
+  else{
+  b.setColor("ORIGINAL");
+  }
+  
   }
  
