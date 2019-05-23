@@ -170,8 +170,10 @@ class Ball extends Thing implements Moveable, Collideable{
     if (other instanceof Rock){
       Rock r = (Rock)other;
       if ( (this.x >= r.x && this.x <= r.x + r.w || this.x + this.w >= r.x && this.x + this.w <= r.x + r.w)
-        && (this.y >= r.y && this.y <= r.y + r.l || this.y + this.l >= r.y && this.y + this.w <= r.y + r.l) )
+        && (this.y >= r.y && this.y <= r.y + r.l || this.y + this.l >= r.y && this.y + this.w <= r.y + r.l) ){
+        // if ball strikes the center area of the rock
       return true;
+        }
     }
     return false;
   }
@@ -191,9 +193,9 @@ class Ball extends Thing implements Moveable, Collideable{
     }
     else if (setColorTo.equals("ORIGINAL")){
       colorIs = "BLUE";
-      color1 = 0;
-      color2 = 0;
-      color3 = 255;
+      color1 = OGcolor1;
+      color2 = OGcolor2;
+      color3 = OGcolor3;
     }
   }
   String getColor(){
@@ -201,23 +203,7 @@ class Ball extends Thing implements Moveable, Collideable{
   }
   
   void display() {
-     for(int i = 0; i < ListOfCollideables.size(); i++) {
-     if (ListOfCollideables.get(i) instanceof Rock){
-        
-        Rock r = (Rock)ListOfCollideables.get(i);
-        if ( this.isTouching(r) ){
-        System.out.println("Ball is touching rock");
-        //fill(0,0,255);
-        rect( this.x, this.y, 10, 10);  
-        this.setColor("RED");
-         System.out.println("set color = red");
-        }
-       }
-     }
-     if (this.getColor().equals("RED") && frameCount % 120 == 4){
-           setColor("ORIGINAL");
-           System.out.println("set color = original");
-      }
+     
     // type 1: make a football
     if (type == 1){
   
@@ -266,10 +252,33 @@ class Ball extends Thing implements Moveable, Collideable{
   int direction = 1; 
   
   void move() {
+    for(int i = 0; i < ListOfCollideables.size(); i++) {
+     if (ListOfCollideables.get(i) instanceof Rock){
+        
+        Rock r = (Rock)ListOfCollideables.get(i);
+        if ( this.isTouching(r) ){
+        System.out.println("Ball is touching rock");
+        //fill(0,0,255);
+        rect( this.x, this.y, 10, 10);  
+        this.setColor("RED");
+         System.out.println("set color = red");
+       if (this.y + this.l <= r.y + (r.l / 4) || this.y >= r.y + (3 * r.l / 4)
+       && this.x >= r.x + (r.w / 4) && this.x <= r.x + (r.w / 2)){
+         y_speed *= -1;
+      }
+      else {
+        x_speed *= -1;
+      }
+        }
+       } 
+     }
+     if (this.getColor().equals("RED") && frameCount % 60 == 4){
+           setColor("ORIGINAL");
+           System.out.println("set color = original");
+      }
+      
     // bounce ball if it passes boundaries
-    if ( (int)x <= 0 || (int)x >= width  || (int)y <= 0 || (int)y >= height){
-      bounce();
-    }
+    bounce();
 
     // path 1: set direction and speed
     if (path == 1){
@@ -301,13 +310,15 @@ class Ball extends Thing implements Moveable, Collideable{
   
   void bounce(){ 
     if (path == 1){
-        if (x < 0 || x > width) {
-    x_speed *= -1;
-  }
-
-  if (y < 0  || y > height) {
+        if (x < 0 || x > width){
+        x_speed *= -1;
+    }
+    if (y < 0  || y > height) {
     y_speed *= -1;
-  }
+    }
+    
+    
+    
     }
     
     if (path == 2){
@@ -366,7 +377,7 @@ void setup() {
    thingsToDisplay.add(b);
    
    
-  for (int i = 0; i < 1; i++) {
+  for (int i = 0; i < 5; i++) {
     Ball a = new Ball(50+random(width-100), 50+random(height-100));
     thingsToDisplay.add(a);
     thingsToMove.add(a);
